@@ -1,0 +1,6 @@
+@FutbolStatsWithFriends_HostAddress = http://localhost:5196
+
+GET {{FutbolStatsWithFriends_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

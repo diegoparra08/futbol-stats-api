@@ -1,0 +1,18 @@
+## Carpetas de compilación e intermedias de C# (¡Pesadas y basura!)
+Bin/
+obj/
+
+## Configuraciones locales de Visual Studio
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Archivos de configuración del entorno local (No subir contraseñas ni cadenas de conexión locales)
+appsettings.Development.json
+.env
+
+## Archivos del sistema operativo
+Thumbs.db
+.DS_Store
