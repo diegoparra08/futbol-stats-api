@@ -1,23 +1,19 @@
-# 1. Etapa de compilación 
+# Etapa de compilación (SDK de .NET 8)
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
-# Copiar el archivo de proyecto y restaurar las dependencias (NuGet)
-COPY *.csproj ./
-RUN dotnet restore
+COPY . .
+RUN dotnet restore "FutbolStatsWithFriends.csproj"
 
-# Copiar el resto del código y compilar la API en modo Release
-COPY . ./
-RUN dotnet publish -c Release -o /app
+# Compilar la API en modo Release
+RUN dotnet publish "FutbolStatsWithFriends.csproj" -c Release -o /app
 
-# 2. Etapa de ejecución 
+# Etapa de ejecución (Runtime de .NET 8)
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 COPY --from=build /app .
 
-# Exponer el puerto que usa Render por defecto
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://+:8080
 
-# Comando para arrancar tu API cuando el servidor encienda
 ENTRYPOINT ["dotnet", "FutbolStatsWithFriends.dll"]
