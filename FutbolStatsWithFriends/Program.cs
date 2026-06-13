@@ -17,7 +17,7 @@ namespace FutbolStatsWithFriends
             {
                 options.AddPolicy("AllowNextJS", policy =>
                 {
-                    policy.WithOrigins("http://localhost:3000") // El puerto de tu frontend
+                    policy.AllowAnyOrigin()
                           .AllowAnyHeader()
                           .AllowAnyMethod();
                 });
