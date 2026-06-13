@@ -224,19 +224,21 @@ namespace FutbolStatsWithFriends.Controllers
         }
 
         // DELETE api/<PlayerController>/5
-        [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(int id)
+        [HttpPatch("{id}/change-status")]
+        public async Task<ActionResult> ChangeStatus(int id)
         {
             var player = await _context.Players.FindAsync(id);
             if (player == null)
             {
                 return NotFound(new ApiResponseFormat<Object>("Player does not exist.", succeeded: false));
             }
-            player.IsActive = false;
+
+            player.IsActive = !player.IsActive; //cambia el estado actual del jugador
+            string action = player.IsActive ? "activated" : "deactivated";
 
             await _context.SaveChangesAsync();
 
-            return Ok(new ApiResponseFormat<Object>($"Player {player.Name} has been deactivated.", succeeded: true));
+            return Ok(new ApiResponseFormat<Object>($"Player {player.Name} has been {action}.", succeeded: true));
         }
     }
 }
