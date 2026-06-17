@@ -98,6 +98,7 @@ namespace FutbolStatsWithFriends.Controllers
                     Goals = m.Goals.Select(g => new GoalReadDTO
                     {
                         Id = g.Id,
+                        PlayerId = g.PlayerId,
                         PlayerName = g.Player != null ? g.Player.Name : "Unknown",
                         Minute = g.Minute,
                         IsPenalty = g.IsPenalty,
@@ -175,6 +176,8 @@ namespace FutbolStatsWithFriends.Controllers
                 .Where(md => md.MatchId == id)
                 .ToListAsync();
 
+            Console.WriteLine("partidos detalles",matchDetails);
+
             if (!matchDetails.Any())
             {
                 return NotFound(new ApiResponseFormat<object>("No lineups found for this match", false));
@@ -184,6 +187,7 @@ namespace FutbolStatsWithFriends.Controllers
             foreach (var playerStat in matchStatsUpdateDto.PlayersStats)
             {
                 var detail = matchDetails.FirstOrDefault(md => md.PlayerId == playerStat.PlayerId);
+                Console.WriteLine("detail", detail);
 
                 if (detail != null)
                 {
