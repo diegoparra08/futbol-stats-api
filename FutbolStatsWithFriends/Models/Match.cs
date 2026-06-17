@@ -6,7 +6,7 @@
         Scheduled, 
         InPlay,    
         Finished,   
-        Canceled    
+        Cancelled    
     }
     public class Match
     {

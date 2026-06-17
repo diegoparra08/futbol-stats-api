@@ -228,7 +228,7 @@ namespace FutbolStatsWithFriends.Controllers
             }
             else if (status == 3)
             {
-                match.Status = MatchStatus.Canceled;
+                match.Status = MatchStatus.Cancelled;
             }
 
             await _context.SaveChangesAsync();
