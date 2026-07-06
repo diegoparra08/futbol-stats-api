@@ -11,7 +11,6 @@
         public int PlayerId { get; set; }
         public string PlayerName { get; set; }
 
-        public int PlayerGoals { get; set; }
         public bool IsPenalty { get; set; }
         public bool IsFreeKick { get; set; }
         public int? AssistedByPlayerId { get; set; }
