@@ -5,6 +5,7 @@ using FutbolStatsWithFriends.DTOs.Rating;
 using FutbolStatsWithFriends.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -62,9 +63,38 @@ namespace FutbolStatsWithFriends.Controllers
             return Ok(new ApiResponseFormat<IEnumerable<GoalReadDTO>>(goals, "Goals loaded successfully"));
         }
 
+        // GET: api/<ValuesController>/5
 
-        // POST api/<ValuesController>
-        [HttpPost]
+        [HttpGet("{id}")]
+
+        public async Task<ActionResult<GoalReadDTO>> Get(int id)
+        {
+            var goal = await _context.Goals.
+                Where(g => g.Id == id).
+                Select(g => new GoalReadDTO
+                {
+                    Id = g.Id,
+                    Minute = g.Minute,
+                    MatchId = g.MatchId,
+                    PlayerId = g.PlayerId,
+                    PlayerName = g.Player.Name,
+                    AssistedByPlayerId = g.AssistedByPlayerId,
+                    AssistedByPlayerName = g.AssistedByPlayer != null ? g.AssistedByPlayer.Name : null,
+                    IsPenalty = g.IsPenalty,
+                    IsFreeKick = g.IsFreeKick,
+                    MatchDate = g.Match.MatchDate
+                }).FirstOrDefaultAsync();
+
+            if (goal == null)
+            {
+                return NotFound(new ApiResponseFormat<Object>("Goal does not exist.", succeeded: false));
+            }
+
+            return Ok(new ApiResponseFormat<GoalReadDTO>(goal, "Player Found Successfully"));
+            //}
+
+            // POST api/<ValuesController>
+            [HttpPost]
         public async Task<ActionResult> Post([FromBody] GoalCreateDTO goalCreateDTO)
         {
            
