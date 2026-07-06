@@ -91,7 +91,7 @@ namespace FutbolStatsWithFriends.Controllers
             }
 
             return Ok(new ApiResponseFormat<GoalReadDTO>(goal, "Player Found Successfully"));
-            //}
+            }
 
             // POST api/<ValuesController>
             [HttpPost]
