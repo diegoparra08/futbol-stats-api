@@ -9,6 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using FutbolStatsWithFriends.DTOs.Auth;
+using FutbolStatsWithFriends.DTOs.User;
 
 namespace ColeccionablesCaros.API.Controllers
 {
@@ -36,7 +37,7 @@ namespace ColeccionablesCaros.API.Controllers
                 return BadRequest("Email address is already registered.");
             }
 
-           //Esta linea encripta la contraseña
+            //Esta linea encripta la contraseña
             string contraseñaEncriptada = BCrypt.Net.BCrypt.HashPassword(registerDto.Password);
 
             // Creamos el nuevo usuario
@@ -53,7 +54,7 @@ namespace ColeccionablesCaros.API.Controllers
 
             return Ok("User registered succesfully.");
         }
-        
+
         [HttpPost("login")]
         public async Task<ActionResult<LoginDTO>> Login([FromBody] LoginDTO loginDto)
         {
@@ -104,6 +105,41 @@ namespace ColeccionablesCaros.API.Controllers
                 Email = user.Email,
                 Name = user.Name
             });
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult> Update(int id, [FromBody] UserSaveDTO userSaveDTO)
+        {
+            var userFound = await _context.Users.FindAsync(id);
+            if (userFound == null)
+            {
+                return NotFound("User not found.");
+            }
+
+            //las verificaciones hacen que solo se actualicen los campos que no estén vacíos, así no se borran datos si el usuario no quiere cambiar algo
+            if (!string.IsNullOrWhiteSpace(userSaveDTO.Name))
+            {
+                userFound.Name = userSaveDTO.Name;
+            }
+
+            if (!string.IsNullOrWhiteSpace(userSaveDTO.Email))
+            {
+                userFound.Email = userSaveDTO.Email;
+            }
+
+            if (userSaveDTO.Role != null)
+            {
+                userFound.Role = userSaveDTO.Role;
+            }
+
+            if (!string.IsNullOrEmpty(userSaveDTO.Password))
+            {
+                userFound.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userSaveDTO.Password);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new ApiResponseFormat<Object>($"User {userFound.Name} has been updated successfully", succeeded: true));
         }
     }
 }
