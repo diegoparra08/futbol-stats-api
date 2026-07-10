@@ -59,7 +59,7 @@ namespace FutbolStatsWithFriends.Controllers
             var usuarioIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
             if (string.IsNullOrEmpty(usuarioIdClaim))
             {
-                return Unauthorized(new ApiResponseFormat<Object>("User not allowed to rate", succeeded:false));
+                return Unauthorized(new ApiResponseFormat<Object>("User not allowed to rate", succeeded: false));
             }
 
             int authorizedUserId = int.Parse(usuarioIdClaim);
@@ -95,13 +95,37 @@ namespace FutbolStatsWithFriends.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] RatingCreateDTO ratingCreateDTO)
         {
-            var usuarioIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(usuarioIdClaim))
+            var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim))
             {
                 return Unauthorized(new ApiResponseFormat<Object>("User not allowed to rate", succeeded: false));
             }
 
-            int authorizedUserId = int.Parse(usuarioIdClaim);
+            int authorizedUserId = int.Parse(userIdClaim);
+
+            //se analiza el rol que tiene el usuario si es Admin se salta la verificacion
+            var isAdmin = User.IsInRole("Admin") || User.FindFirst(System.Security.Claims.ClaimTypes.Role)?.Value == "Admin";
+            if (!isAdmin)
+            {
+                var lastRating = await _context.Ratings
+                    .Where(r => r.UserId == authorizedUserId)
+                    .OrderByDescending(r => r.CreatedAt)
+                    .FirstOrDefaultAsync();
+
+                if (lastRating != null)
+                {
+                    //se verifica el numero de dias desde el ultimo rating creado si es menor a 15 dias no se permite aun calificar
+                    var daysSinceLastRating = (DateTime.UtcNow - lastRating.CreatedAt).TotalDays;
+
+                    if (daysSinceLastRating < 15)
+                    {
+                        int diasRestantes = 15 - (int)daysSinceLastRating;
+                        return BadRequest(new ApiResponseFormat<Object>(
+                            $"Debes esperar {diasRestantes} días más para volver a calificar a este jugador.",
+                            succeeded: false));
+                    }
+                }
+            }
 
             var playerFound = await _context.Players.FirstOrDefaultAsync(p => p.Id == ratingCreateDTO.PlayerId);
             if (playerFound == null)
@@ -120,7 +144,8 @@ namespace FutbolStatsWithFriends.Controllers
                 Strength = ratingCreateDTO.Strength,
                 Goalkeeping = ratingCreateDTO.Goalkeeping,
                 UserId = authorizedUserId,
-                PlayerId = ratingCreateDTO.PlayerId
+                PlayerId = ratingCreateDTO.PlayerId,
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Ratings.Add(newRating);
@@ -145,7 +170,7 @@ namespace FutbolStatsWithFriends.Controllers
                 return NotFound("Rating not found.");
             }
 
-            if (rating.UserId != authorizedUserId) 
+            if (rating.UserId != authorizedUserId)
             {
                 return Unauthorized(new ApiResponseFormat<Object>("You can only edit your own ratings", succeeded: false));
             }
@@ -182,12 +207,12 @@ namespace FutbolStatsWithFriends.Controllers
             int authorizedUserId = int.Parse(usuarioIdClaim);
 
             var rating = await _context.Ratings.FirstOrDefaultAsync(r => r.Id == id);
-            if(rating == null)
+            if (rating == null)
             {
                 return NotFound(new ApiResponseFormat<Object>("Rating not found.", succeeded: false));
             }
 
-            if(rating.UserId != authorizedUserId)
+            if (rating.UserId != authorizedUserId)
             {
                 return Unauthorized(new ApiResponseFormat<Object>("You can only delete your own ratings.", succeeded: false));
             }
