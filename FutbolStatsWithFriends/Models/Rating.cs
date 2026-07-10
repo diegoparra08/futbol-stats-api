@@ -38,5 +38,8 @@ namespace FutbolStatsWithFriends.Models
 
         public int PlayerId { get; set; }
         public Player? Player { get; set; }
+
+        [Required]
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

@@ -90,8 +90,8 @@ namespace FutbolStatsWithFriends.Controllers
                 return NotFound(new ApiResponseFormat<Object>("Goal does not exist.", succeeded: false));
             }
 
-            return Ok(new ApiResponseFormat<GoalReadDTO>(goal, "Player Found Successfully"));
-            //}
+            return Ok(new ApiResponseFormat<GoalReadDTO>(goal, "Goal Found Successfully"));
+            }
 
             // POST api/<ValuesController>
             [HttpPost]
