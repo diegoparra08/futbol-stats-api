@@ -108,7 +108,7 @@ namespace FutbolStatsWithFriends.Controllers
             if (!isAdmin)
             {
                 var lastRating = await _context.Ratings
-                    .Where(r => r.UserId == authorizedUserId)
+                    .Where(r => r.UserId == authorizedUserId && r.PlayerId == ratingCreateDTO.PlayerId)
                     .OrderByDescending(r => r.CreatedAt)
                     .FirstOrDefaultAsync();
 

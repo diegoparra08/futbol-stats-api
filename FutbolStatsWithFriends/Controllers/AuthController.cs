@@ -50,9 +50,10 @@ namespace ColeccionablesCaros.API.Controllers
             };
 
             _context.Users.Add(newUser);
-            await _context.SaveChangesAsync();
 
-            return Ok("User registered succesfully.");
+            await _context.SaveChangesAsync();
+            return Ok(new ApiResponseFormat<Object>($"User registered successfully", succeeded: true));
+           
         }
 
         [HttpPost("login")]
@@ -65,7 +66,7 @@ namespace ColeccionablesCaros.API.Controllers
             // comparar contraseñas. elverify pasa los valores a comparar y retorna bool
             if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.Password, user.PasswordHash))
             {
-                return Unauthorized("Email or password incorrect.");
+                return Unauthorized(new ApiResponseFormat<Object>($"Email or password incorrect", succeeded: false));
             }
 
             //Aca se empiza a formar el contenido del token dentro del [] claims
