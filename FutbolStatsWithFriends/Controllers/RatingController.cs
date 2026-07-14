@@ -64,7 +64,7 @@ namespace FutbolStatsWithFriends.Controllers
 
             int authorizedUserId = int.Parse(usuarioIdClaim);
 
-            var rating = await _context.Ratings
+            var ratings = await _context.Ratings
                 .Where(u => u.UserId == authorizedUserId && u.PlayerId == id)
                 .Select(r => new RatingReadDTO
                 {
@@ -81,14 +81,14 @@ namespace FutbolStatsWithFriends.Controllers
                     UserId = r.UserId,
                     PlayerId = r.PlayerId,
                     PlayerName = r.Player.Name
-                }).FirstOrDefaultAsync();
+                }).ToListAsync();
 
-            if (rating == null)
+            if (ratings == null)
             {
                 return NotFound(new ApiResponseFormat<Object>("You have not rate this player yet, or the player does not exist.", succeeded: false));
             }
 
-            return Ok(rating);
+            return Ok(new ApiResponseFormat<IEnumerable<RatingReadDTO>>(ratings, "Successfull Search"));
         }
 
         // POST api/<RatingController>
@@ -183,6 +183,7 @@ namespace FutbolStatsWithFriends.Controllers
             rating.Physicality = ratingUpdateDTO.Physicality;
             rating.Strength = ratingUpdateDTO.Strength;
             rating.Goalkeeping = ratingUpdateDTO.Goalkeeping;
+            rating.CreatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
