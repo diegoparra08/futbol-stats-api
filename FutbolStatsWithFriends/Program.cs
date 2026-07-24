@@ -53,7 +53,7 @@ namespace FutbolStatsWithFriends
             {
                 Reference = new Microsoft.OpenApi.Models.OpenApiReference
                 {
-                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme, // <-- ESTA ES LA CLASE REAL
+                    Type = Microsoft.OpenApi.Models.ReferenceType.SecurityScheme, 
                     Id = "Bearer"
                 }
             },
@@ -79,7 +79,7 @@ namespace FutbolStatsWithFriends
                 {
                     ValidateIssuer = true,
                     ValidateAudience = true,
-                    ValidateLifetime = true, // Verifica que el token no haya expirado
+                    ValidateLifetime = true, // Verifica que el token no haya expirado los 90 min (definido en el appsettings.json)
                     ValidateIssuerSigningKey = true, // Valida que la firma sea legítima
                     ValidIssuer = jwtIssuer,
                     ValidAudience = jwtAudience,
