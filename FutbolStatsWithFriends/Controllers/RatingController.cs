@@ -47,7 +47,12 @@ namespace FutbolStatsWithFriends.Controllers
                      UserId = r.UserId,
                      PlayerId = r.PlayerId,
                      PlayerName = r.Player.Name,
-                     CreatedAt = r.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")
+                     CreatedAt = r.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                     OverallRating = r.Player.Positions.Any(pos => pos.PositionName == PlayerPosition.Positions.GK)
+
+                ? (r.Goalkeeping + r.Physicality + r.Passing) / 3.0
+
+                : (r.Speed + r.Shooting + r.Passing + r.Dribbling + r.Defending + r.Physicality) / 6.0,
                  }).ToListAsync();
 
             return Ok(new ApiResponseFormat<IEnumerable<RatingReadDTO>>(ratings, "Successfull Search"));
@@ -82,7 +87,12 @@ namespace FutbolStatsWithFriends.Controllers
                     UserId = r.UserId,
                     PlayerId = r.PlayerId,
                     PlayerName = r.Player.Name,
-                    CreatedAt = r.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss")
+                    CreatedAt = r.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss"),
+                    OverallRating = r.Player.Positions.Any(pos => pos.PositionName == PlayerPosition.Positions.GK)
+
+                ? (r.Goalkeeping + r.Physicality + r.Passing) / 3.0
+
+                : (r.Speed + r.Shooting + r.Passing + r.Dribbling + r.Defending + r.Physicality) / 6.0,
                 }).ToListAsync();
 
             if (ratings == null)
