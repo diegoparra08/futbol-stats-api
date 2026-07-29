@@ -21,6 +21,7 @@ namespace FutbolStatsWithFriends.DTOs.Match
     {
         public int PlayerId { get; set; }
         public TeamSide Team { get; set; }
+        public int? TacticalPositionIndex { get; set; }
     }
 
     public class MatchStatsUpdateDTO
@@ -32,6 +33,7 @@ namespace FutbolStatsWithFriends.DTOs.Match
     {
         public int PlayerId { get; set; } // Obligatorio para identificar al jugador
         public TeamSide? Team { get; set; } // Nullable opcional por si no cambia de equipo
+        public int? TacticalPositionIndex { get; set; }
         public int Recoveries { get; set; }
         public int Tackles { get; set; }
         public int FoulsCommitted { get; set; }

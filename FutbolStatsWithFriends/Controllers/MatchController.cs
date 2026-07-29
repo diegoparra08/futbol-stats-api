@@ -47,6 +47,7 @@ namespace FutbolStatsWithFriends.Controllers
                         PlayerId = md.PlayerId,
                         PlayerName = md.Player != null ? md.Player.Name : "Unknown",
                         Team = md.Team.ToString(),
+                        TacticalPositionIndex = md.TacticalPositionIndex,
                         Recoveries = md.Recoveries,
                         Tackles = md.Tackles,
                         FoulsCommitted = md.FoulsCommitted
@@ -89,6 +90,7 @@ namespace FutbolStatsWithFriends.Controllers
                         PlayerId = md.PlayerId,
                         PlayerName = md.Player != null ? md.Player.Name : "Unknown",
                         Team = md.Team.ToString(),
+                        TacticalPositionIndex = md.TacticalPositionIndex,
                         Recoveries = md.Recoveries,
                         Tackles = md.Tackles,
                         FoulsCommitted = md.FoulsCommitted
@@ -139,7 +141,8 @@ namespace FutbolStatsWithFriends.Controllers
                 var detail = new MatchDetail
                 {
                     PlayerId = detailDTO.PlayerId,
-                    Team = detailDTO.Team
+                    Team = detailDTO.Team,
+                    TacticalPositionIndex = detailDTO.TacticalPositionIndex,
                 };
 
                 newMatch.MatchDetails.Add(detail);
@@ -192,6 +195,10 @@ namespace FutbolStatsWithFriends.Controllers
                     if (playerStat.Team.HasValue)
                     {
                         detail.Team = playerStat.Team.Value;
+                    }
+                    if (playerStat.TacticalPositionIndex != null)
+                    {
+                        detail.TacticalPositionIndex = playerStat.TacticalPositionIndex;
                     }
 
                     // Las estadísticas defensivas se sobrescriben con los nuevos valores de los contadores
