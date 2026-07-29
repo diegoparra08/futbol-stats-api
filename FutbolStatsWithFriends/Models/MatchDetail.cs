@@ -17,6 +17,8 @@ public class MatchDetail
     public int PlayerId { get; set; }
     public Player? Player { get; set; }
 
+    public int? TacticalPositionIndex {  get; set; }
+
     
     public int Recoveries { get; set; }
     public int Tackles { get; set; }

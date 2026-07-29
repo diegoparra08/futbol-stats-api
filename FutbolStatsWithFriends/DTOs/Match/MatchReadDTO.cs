@@ -20,6 +20,7 @@ namespace FutbolStatsWithFriends.DTOs.Match
     {
         public int PlayerId { get; set; }
         public string PlayerName { get; set; }
+        public int? TacticalPositionIndex { get; set; }
         public string Team { get; set; }
         public int Recoveries { get; set; }
         public int Tackles { get; set; }
